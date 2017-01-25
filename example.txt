@@ -1,0 +1,17 @@
+import { createProxyServer } from 'http-proxy';
+import url from 'url';
+import _ from 'lodash';
+
+module.exports = app => {
+  const proxy = createProxyServer();
+  app.all('/api/v1/*', (req, res) => {
+    const path = _.drop(req.url.split('/'), 3);
+    proxy.proxyRequest(req, res, {
+      target: url.resolve('YOUR URL', path.join('/')),
+      ignorePath: true,
+      headers: {
+        'Authorization': 'XXX)',
+      },
+    });
+  });
+};
